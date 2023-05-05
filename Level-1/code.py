@@ -12,22 +12,38 @@
 '''
 
 from collections import namedtuple
+from decimal import Decimal
+
+MAX_ITEM_AMOUNT = 1e9
+MAX_QUANTITY = 1e9
+MAX_TOTAL = 1e9
 
 Order = namedtuple('Order', 'id, items')
 Item = namedtuple('Item', 'type, description, amount, quantity')
 
 def validorder(order: Order):
-    net = 0
+    net = Decimal('0')
     
     for item in order.items:
         if item.type == 'payment':
-            net += item.amount
+            if item.amount < MAX_ITEM_AMOUNT and item.amount > -MAX_ITEM_AMOUNT:
+                net += Decimal(str(item.amount))
         elif item.type == 'product':
-            net -= item.amount * item.quantity
+            if not (item.amount < MAX_ITEM_AMOUNT and item.amount > -MAX_ITEM_AMOUNT):
+                return(f"{item.amount} exceeds the maximum price. Please try again with a value between {-MAX_ITEM_AMOUNT} and {MAX_ITEM_AMOUNT}")
+            elif not (item.quantity < MAX_QUANTITY and item.quantity > -MAX_QUANTITY):
+                return(f"{item.quantity} exceeds the maximum amount of items. Please try again with a value between {-MAX_QUANTITY} and {MAX_QUANTITY}")
+            else:
+                net -= Decimal(str(item.amount * item.quantity))
+                if not (net < MAX_TOTAL and net > -MAX_TOTAL):
+                    return(f"{item.total} exceeds the maximum total. Please try again with a a value between {-MAX_TOTAL} and {MAX_TOTAL}")
         else:
-            return("Invalid item type: %s" % item.type)
+            return(f"Invalid item type: {item.type}")
     
     if net != 0:
-        return("Order ID: %s - Payment imbalance: $%0.2f" % (order.id, net))
+        return(f"Order ID: {order.id} - Payment imbalance: ${Decimal(net).quantize(Decimal('1.00'))}")
     else:
-        return("Order ID: %s - Full payment received!" % order.id)
+        return(f"Order ID: {order.id} - Full payment received!")
+
+print(validorder(Order(id="among", items=[Item('product', 'desc', 5, 5)])))
+print(validorder(Order(id="among2", items=[Item('payment', 'decssss', 5, 5)])))
