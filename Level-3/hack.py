@@ -24,7 +24,7 @@ class TestTaxPayer(unittest.TestCase):
         # user input to the tax form attachment
         file_path = './../../../../../etc/passwd'
         # complete path for input
-        input = base_dir + file_path
+        input = base_dir + '/' + file_path
         # the output of the function upon processing user input
         output = test_obj.get_tax_form_attachment(input)
 
