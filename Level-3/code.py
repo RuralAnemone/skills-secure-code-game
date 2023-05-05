@@ -23,8 +23,8 @@ class TaxPayer:
         if not path:
             pass
         
-        # defends against path traversal attacks
-        if path.startswith('/') or path.startswith('..'):
+        # actually defends against path traversal attacks
+        if os.path.normpath(path) != os.path.normpath('./assets/*'):
             return None
         
         # builds path
