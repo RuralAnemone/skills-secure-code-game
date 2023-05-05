@@ -17,7 +17,7 @@ class TaxPayer:
         self.prof_picture = None
         self.tax_form_attachment = None
 
-    # returns the path of an optional profile picture that users can set        
+    # returns the path of an optional profile picture that users can set
     def get_prof_picture(self, path=None):
         # setting a profile picture is optional
         if not path:
